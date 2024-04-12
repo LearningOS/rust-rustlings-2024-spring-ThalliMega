@@ -1,8 +1,7 @@
 /*
-	heap
-	This question requires you to implement a binary heap function
+    heap
+    This question requires you to implement a binary heap function
 */
-// I AM NOT DONE
 
 use std::cmp::Ord;
 use std::default::Default;
@@ -37,7 +36,21 @@ where
     }
 
     pub fn add(&mut self, value: T) {
-        //TODO
+        let cmp = self.comparator;
+        let arr = &mut self.items;
+
+        arr.push(value);
+        self.count += 1;
+
+        if arr.len() < 2 {
+            return;
+        }
+
+        let mut index = self.count;
+        while cmp(&arr[index], &arr[index / 2]) && index != 1 {
+            arr.swap(index, index / 2);
+            index /= 2;
+        }
     }
 
     fn parent_idx(&self, idx: usize) -> usize {
@@ -58,7 +71,8 @@ where
 
     fn smallest_child_idx(&self, idx: usize) -> usize {
         //TODO
-		0
+        // idk what is this
+        idx
     }
 }
 
@@ -84,8 +98,34 @@ where
     type Item = T;
 
     fn next(&mut self) -> Option<T> {
-        //TODO
-		None
+        if self.count == 0 {
+            return None;
+        }
+        self.count -= 1;
+
+        let arr = &mut self.items;
+        let cmp = self.comparator;
+        let mut index = 1;
+        let mut left = index * 2;
+        let mut right = left + 1;
+
+        while right < arr.len() {
+            if cmp(&arr[left], &arr[right]) {
+                arr.swap(index, left);
+                index = left;
+            } else {
+                arr.swap(index, right);
+                index = right;
+            }
+            left = index * 2;
+            right = left + 1;
+        }
+
+        if left < arr.len() {
+            arr.swap(index, left);
+        }
+
+        arr.pop()
     }
 }
 
